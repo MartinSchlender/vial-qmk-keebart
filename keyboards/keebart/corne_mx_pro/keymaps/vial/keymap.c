@@ -207,6 +207,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   const uint8_t GROESSER_KLEINER[] = {6, 9};
   const uint8_t ZAHLEN [] = {27,28,29,32,33,34,35,36,37};
   const uint8_t CAPS_LOCK [] = {21, 22, 44, 45};
+  const uint8_t F_TASTEN [] = {3,4,5,6,9,10,11,12,13,14};
+  const uint8_t ZOOM [] = {1,2};
+  const uint8_t STEUERUNG [] = {28,32,33,34,35,36};
 
   //const uint8_t TEST [] = {38,39};
 
@@ -236,6 +239,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     }
     case 2: {
       set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_GREEN);
+      set_layer_leds(F_TASTEN,ARRAY_SIZE(F_TASTEN),RGB_GREEN);
+      set_layer_leds(ZOOM,ARRAY_SIZE(ZOOM),RGB_BLUE);
+      set_layer_leds(STEUERUNG,ARRAY_SIZE(STEUERUNG),RGB_GREEN);
       break;
     }
     case 4: {
@@ -253,6 +259,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     }
     case 6: {
       set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_GREEN);
+      set_layer_leds(F_TASTEN,ARRAY_SIZE(F_TASTEN),RGB_GREEN);
+      set_layer_leds(ZOOM,ARRAY_SIZE(ZOOM),RGB_BLUE);
+      set_layer_leds(STEUERUNG,ARRAY_SIZE(STEUERUNG),RGB_GREEN);
       break;
     }
     default:
