@@ -1,5 +1,6 @@
 #include QMK_KEYBOARD_H
 
+
 #ifdef LAYOUT_split_3x6_3_ex2
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3_ex2(
@@ -191,40 +192,67 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 };
 #endif
 
+
+
+
+
+
+
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
-  const uint8_t UPPER_LEDS[] = {18, 17, 12, 11,  4,  3, 41, 40, 35, 34, 27, 26 };
+  const uint8_t BOTTOM_LEDS[] = {0, 7, 8, 23, 30, 31};
+  const uint8_t KLAMMERN_NORMAL[] = {4,11};
+  const uint8_t KLAMMERN_GESCHWEIFT[] = {14, 15};
+  const uint8_t KLAMMERN_ECKIG[] = {13, 16};
+  const uint8_t GROESSER_KLEINER[] = {6, 9};
+  const uint8_t ZAHLEN [] = {27,28,29,32,33,34,35,36,37};
+  const uint8_t CAPS_LOCK [] = {21, 22, 44, 45};
 
-  void set_upper_leds(uint8_t redvalue, uint8_t greenvalue, uint8_t bluevalue) {
-    for (uint8_t i=0; i < ARRAY_SIZE(UPPER_LEDS); i++) {
-      rgb_matrix_set_color((UPPER_LEDS[i]), redvalue, greenvalue, bluevalue);
+  //const uint8_t TEST [] = {38,39};
+
+  void set_layer_leds(const uint8_t *led_array, uint8_t length, uint8_t redvalue, uint8_t greenvalue, uint8_t bluevalue) {
+    for (uint8_t i=0; i < length; i++) {
+      if (is_keyboard_left() && led_array[i] <= 22)
+        rgb_matrix_set_color((led_array[i]), redvalue, greenvalue, bluevalue);
+      if (!is_keyboard_left() && led_array[i] > 22)
+        rgb_matrix_set_color((led_array[i]-23), redvalue, greenvalue, bluevalue);
     }
   };
 
-
+  if (host_keyboard_led_state().caps_lock) set_layer_leds(CAPS_LOCK,ARRAY_SIZE(CAPS_LOCK),RGB_WHITE);
   switch(get_highest_layer(layer_state)){  // special handling per layer
     case 0: {
-      set_upper_leds(RGB_CYAN);
+      set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_CYAN);
       break;
     }
     case 1: {
-      set_upper_leds(RGB_MAGENTA);
+      set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_MAGENTA);
+      set_layer_leds(KLAMMERN_NORMAL,ARRAY_SIZE(KLAMMERN_NORMAL),RGB_GREEN);
+      set_layer_leds(KLAMMERN_GESCHWEIFT,ARRAY_SIZE(KLAMMERN_GESCHWEIFT),RGB_CYAN);
+      set_layer_leds(KLAMMERN_ECKIG,ARRAY_SIZE(KLAMMERN_ECKIG),RGB_YELLOW);
+      set_layer_leds(GROESSER_KLEINER,ARRAY_SIZE(GROESSER_KLEINER),RGB_ORANGE);
+      set_layer_leds(ZAHLEN,ARRAY_SIZE(ZAHLEN),RGB_GREEN);
       break;
     }
     case 2: {
-      set_upper_leds(RGB_GREEN);
+      set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_GREEN);
       break;
     }
     case 4: {
-      set_upper_leds(RGB_RED);
+      set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_RED);
       break;
     }
     case 5: {
-      set_upper_leds(RGB_MAGENTA);
+      set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_MAGENTA);
+      set_layer_leds(KLAMMERN_NORMAL,ARRAY_SIZE(KLAMMERN_NORMAL),RGB_GREEN);
+      set_layer_leds(KLAMMERN_GESCHWEIFT,ARRAY_SIZE(KLAMMERN_GESCHWEIFT),RGB_CYAN);
+      set_layer_leds(KLAMMERN_ECKIG,ARRAY_SIZE(KLAMMERN_ECKIG),RGB_YELLOW);
+      set_layer_leds(GROESSER_KLEINER,ARRAY_SIZE(GROESSER_KLEINER),RGB_ORANGE);
+      set_layer_leds(ZAHLEN,ARRAY_SIZE(ZAHLEN),RGB_GREEN);
       break;
     }
     case 6: {
-      set_upper_leds(RGB_GREEN);
+      set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_GREEN);
       break;
     }
     default:
@@ -234,38 +262,3 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   return false;
 }
 
-/*
-bool process_detected_host_os_kb(os_variant_t detected_os) {
-    if (!process_detected_host_os_user(detected_os)) {
-        return false;
-    }
-    switch (detected_os) {
-        case OS_MACOS:
-          layer_move(4);
-          rgb_matrix_set_color_all(RGB_RED);
-          break;
-        case OS_WINDOWS:
-            layer_move(0);
-            rgb_matrix_set_color_all(RGB_GREEN);
-            break;
-        case OS_IOS:
-            rgb_matrix_set_color_all(RGB_RED);
-            break;
-        case OS_LINUX:
-            rgb_matrix_set_color_all(RGB_RED);
-            break;
-        case OS_UNSURE:
-            rgb_matrix_set_color_all(RGB_RED);
-            break;
-    }
-    
-    return true;
-}
-
-layer_state_t default_layer_state_set_user(layer_state_t state) {
-    // Re-apply OS color on default layer change
-    process_detected_host_os_kb(detected_host_os());
-    return state;
-}
-
-*/
