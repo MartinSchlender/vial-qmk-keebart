@@ -197,7 +197,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 
 
 
-
+//hier werden die Farben für die Layer definiert - zur Anzeige welcher Layer aktiv ist (Tasten unten) und dann die Klammernpaare etc. und Caps Lock
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
   const uint8_t BOTTOM_LEDS[] = {0, 7, 8, 23, 30, 31};
@@ -210,20 +210,38 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   const uint8_t F_TASTEN [] = {3,4,5,6,9,10,11,12,13,14};
   const uint8_t ZOOM [] = {1,2};
   const uint8_t STEUERUNG [] = {28,32,33,34,35,36};
+  const uint8_t MAUSSTEUERUNG [] = {28,32,34,36};
+  const uint8_t MAUSBUTTONS [] = {5,10,13,33};
+  
 
-  //const uint8_t TEST [] = {38,39};
 
-  void set_layer_leds(const uint8_t *led_array, uint8_t length, uint8_t redvalue, uint8_t greenvalue, uint8_t bluevalue) {
-    for (uint8_t i=0; i < length; i++) {
-      if (is_keyboard_left() && led_array[i] <= 22)
-        rgb_matrix_set_color((led_array[i]), redvalue, greenvalue, bluevalue);
-      if (!is_keyboard_left() && led_array[i] > 22)
-        rgb_matrix_set_color((led_array[i]-23), redvalue, greenvalue, bluevalue);
+  void set_layer_leds(
+    const uint8_t *led_array,
+    uint8_t length,
+    uint8_t redvalue,
+    uint8_t greenvalue,
+    uint8_t bluevalue
+    ) {
+    uint8_t brightness = rgb_matrix_config.hsv.v;
+
+    for (uint8_t i = 0; i < length; i++) {
+
+        uint8_t r = (redvalue   * brightness) / 255;
+        uint8_t g = (greenvalue * brightness) / 255;
+        uint8_t b = (bluevalue  * brightness) / 255;
+
+        if (is_keyboard_left() && led_array[i] <= 22)
+            rgb_matrix_set_color(led_array[i], r, g, b);
+
+        if (!is_keyboard_left() && led_array[i] > 22)
+            rgb_matrix_set_color(led_array[i] - 23, r, g, b);
     }
   };
 
-  if (host_keyboard_led_state().caps_lock) set_layer_leds(CAPS_LOCK,ARRAY_SIZE(CAPS_LOCK),RGB_WHITE);
-  switch(get_highest_layer(layer_state)){  // special handling per layer
+
+  if (host_keyboard_led_state().caps_lock) set_layer_leds(CAPS_LOCK,ARRAY_SIZE(CAPS_LOCK),RGB_WHITE); //Caps Lock
+
+  switch(get_highest_layer(layer_state | default_layer_state)){  // special handling per layer
     case 0: {
       set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_CYAN);
       break;
@@ -242,6 +260,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       set_layer_leds(F_TASTEN,ARRAY_SIZE(F_TASTEN),RGB_GREEN);
       set_layer_leds(ZOOM,ARRAY_SIZE(ZOOM),RGB_BLUE);
       set_layer_leds(STEUERUNG,ARRAY_SIZE(STEUERUNG),RGB_GREEN);
+      break;
+    }
+    case 3: {
+      set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_YELLOW);
+      set_layer_leds(MAUSSTEUERUNG,ARRAY_SIZE(MAUSSTEUERUNG),RGB_GREEN);
+      set_layer_leds(MAUSBUTTONS,ARRAY_SIZE(MAUSBUTTONS),RGB_RED);
       break;
     }
     case 4: {
@@ -264,6 +288,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       set_layer_leds(STEUERUNG,ARRAY_SIZE(STEUERUNG),RGB_GREEN);
       break;
     }
+      case 7: {
+      set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_YELLOW);
+      set_layer_leds(MAUSSTEUERUNG,ARRAY_SIZE(MAUSSTEUERUNG),RGB_GREEN);
+      set_layer_leds(MAUSBUTTONS,ARRAY_SIZE(MAUSBUTTONS),RGB_RED);
+      break;
+    }
     default:
       // don't change default behavior
       break;
@@ -271,3 +301,10 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   return false;
 }
 
+
+//Tri State für Layer 0-3 und 4-7 aktivieren
+layer_state_t layer_state_set_user(layer_state_t state) {
+    state = update_tri_layer_state(state, 1, 2, 3); // bestehend (Windows)
+    state = update_tri_layer_state(state, 5, 6, 7); // neu (Mac)
+    return state;
+}
