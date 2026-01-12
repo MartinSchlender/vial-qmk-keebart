@@ -193,6 +193,25 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 #endif
 
 
+/* -------------------------------------------------------------------------
+ * Corne MX pro 46-key LED index reference (RGB Matrix)
+ *
+ * LED numbering: 0–45
+ *
+ * Left half (0–22)              Right half (23–45)
+ *
+ * ,------------------------------.                ,---------------------------------.
+ * | 18 | 17 | 12 | 11 | 04 | 03 |                  | 26 | 27 | 34 | 35 | 40 | 41 |
+ * |----+----+----+----+----+----|----+        +----|----+----+----+----+----+----|
+ * | 19 | 16 | 13 | 10 | 05 | 02 | 21 |        | 44 | 25 | 28 | 33 | 36 | 39 | 42 |
+ * |----+----+----+----+----+----|----+        +----|----+----+----+----+----+----|
+ * | 20 | 15 | 14 | 09 | 06 | 01 | 22 |        | 45 | 24 | 29 | 32 | 37 | 38 | 43 |
+ * |----+----+----+----+----+----|----|        +----|----+----+----+----+----+----|
+ * |                08 | 07 | 00 |                  | 23 | 30 | 31 |
+ * `---------------------------------'             `---------------------------------'
+ *
+ * Use these indices for rgb_matrix_set_color(LED, R, G, B)
+ * ------------------------------------------------------------------------- */
 
 
 
@@ -222,7 +241,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     uint8_t greenvalue,
     uint8_t bluevalue
     ) {
-    uint8_t brightness = rgb_matrix_config.hsv.v;
+    uint8_t brightness = rgb_matrix_config.hsv.v; //Helligkeit lesen um sie nachher zur Multiplikation zu verwenden
 
     for (uint8_t i = 0; i < length; i++) {
 
@@ -236,12 +255,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         if (!is_keyboard_left() && led_array[i] > 22)
             rgb_matrix_set_color(led_array[i] - 23, r, g, b);
     }
-  };
+  };m
 
 
   if (host_keyboard_led_state().caps_lock) set_layer_leds(CAPS_LOCK,ARRAY_SIZE(CAPS_LOCK),RGB_WHITE); //Caps Lock
 
-  switch(get_highest_layer(layer_state | default_layer_state)){  // special handling per layer
+  switch(get_highest_layer(layer_state | default_layer_state)){  // special handling per layer - damit wird auch Layer 3 und 7 korrekt erkannt
     case 0: {
       set_layer_leds(BOTTOM_LEDS,ARRAY_SIZE(BOTTOM_LEDS),RGB_CYAN);
       break;
@@ -299,12 +318,4 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       break;
   }
   return false;
-}
-
-
-//Tri State für Layer 0-3 und 4-7 aktivieren
-layer_state_t layer_state_set_user(layer_state_t state) {
-    state = update_tri_layer_state(state, 1, 2, 3); // bestehend (Windows)
-    state = update_tri_layer_state(state, 5, 6, 7); // neu (Mac)
-    return state;
 }
