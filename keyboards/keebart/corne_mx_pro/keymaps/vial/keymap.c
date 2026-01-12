@@ -255,7 +255,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         if (!is_keyboard_left() && led_array[i] > 22)
             rgb_matrix_set_color(led_array[i] - 23, r, g, b);
     }
-  };m
+  };
 
 
   if (host_keyboard_led_state().caps_lock) set_layer_leds(CAPS_LOCK,ARRAY_SIZE(CAPS_LOCK),RGB_WHITE); //Caps Lock
