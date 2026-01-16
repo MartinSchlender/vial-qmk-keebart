@@ -319,3 +319,11 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   }
   return false;
 }
+
+
+//Tri State für Layer 0-3 und 4-7 aktivieren
+layer_state_t layer_state_set_user(layer_state_t state) {
+    state = update_tri_layer_state(state, 1, 2, 3); // bestehend (Windows)
+    state = update_tri_layer_state(state, 5, 6, 7); // neu (Mac)
+    return state;
+}
