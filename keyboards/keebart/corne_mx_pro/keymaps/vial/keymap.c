@@ -233,7 +233,43 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   const uint8_t MAUSBUTTONS [] = {5,10,13,33};
   
 
+  void set_layer_leds(
+      const uint8_t *led_array,
+      uint8_t length,
+      uint8_t redvalue,
+      uint8_t greenvalue,
+      uint8_t bluevalue
+  ) {
+      uint8_t v = rgb_matrix_config.hsv.v; //Helligkeit lesen um sie nachher zur Multiplikation zu verwenden
 
+      // --- Feintuning ---
+      const uint8_t MIN_LAYER_BRIGHTNESS = 40;   // Grundhelligkeit
+      const uint8_t LAYER_BOOST_PERCENT = 130;   // +30 %
+      // ------------------
+
+      // Mindesthelligkeit erzwingen (nur wenn RGB an ist)
+      if (v < MIN_LAYER_BRIGHTNESS && rgb_matrix_config.enable) {
+          v = MIN_LAYER_BRIGHTNESS;
+      }
+
+      // Boost anwenden
+      v = (v * LAYER_BOOST_PERCENT) / 100;
+      if (v > 255) v = 255;
+
+      for (uint8_t i = 0; i < length; i++) {
+          uint8_t r = (redvalue   * v) / 255;
+          uint8_t g = (greenvalue * v) / 255;
+          uint8_t b = (bluevalue  * v) / 255;
+
+          if (is_keyboard_left() && led_array[i] <= 22)
+              rgb_matrix_set_color(led_array[i], r, g, b);
+
+          if (!is_keyboard_left() && led_array[i] > 22)
+              rgb_matrix_set_color(led_array[i] - 23, r, g, b);
+      }
+  }
+
+  /*
   void set_layer_leds(
     const uint8_t *led_array,
     uint8_t length,
@@ -256,7 +292,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             rgb_matrix_set_color(led_array[i] - 23, r, g, b);
     }
   };
-
+  */
 
   if (host_keyboard_led_state().caps_lock) set_layer_leds(CAPS_LOCK,ARRAY_SIZE(CAPS_LOCK),RGB_WHITE); //Caps Lock
 
