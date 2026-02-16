@@ -243,7 +243,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       uint8_t v = rgb_matrix_config.hsv.v; //Helligkeit lesen um sie nachher zur Multiplikation zu verwenden
 
       // --- Feintuning ---
-      const uint8_t MIN_LAYER_BRIGHTNESS = 40;   // Grundhelligkeit
+      const uint8_t MIN_LAYER_BRIGHTNESS = 30;   // Grundhelligkeit
       const uint8_t LAYER_BOOST_PERCENT = 130;   // +30 %
       // ------------------
 
@@ -371,6 +371,12 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_SLASH:
             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
             return true;
+        
+        // Vial-spezifische Tap Dances zulassen
+        // QK_TAP_DANCE ist das Start-Offset für alle Tap Dances in modernen QMK/Vial Versionen
+        case QK_TAP_DANCE ... QK_TAP_DANCE_MAX:
+            add_weak_mods(MOD_BIT(KC_LSFT)); // Damit C und V auch groß werden
+            return true;
 
         // Keycodes that continue Caps Word, without shifting.
         case KC_1 ... KC_0:
@@ -382,3 +388,4 @@ bool caps_word_press_user(uint16_t keycode) {
             return false;  // Deactivate Caps Word.
     }
 }
+
