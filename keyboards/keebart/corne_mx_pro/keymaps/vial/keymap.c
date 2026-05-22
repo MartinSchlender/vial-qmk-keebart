@@ -243,8 +243,8 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       uint8_t v = rgb_matrix_config.hsv.v; //Helligkeit lesen um sie nachher zur Multiplikation zu verwenden
 
       // --- Feintuning ---
-      const uint8_t MIN_LAYER_BRIGHTNESS = 30;   // Grundhelligkeit
-      const uint8_t LAYER_BOOST_PERCENT = 130;   // +30 %
+      const uint8_t MIN_LAYER_BRIGHTNESS = 20;   // Grundhelligkeit
+      const uint8_t LAYER_BOOST_PERCENT = 120;   // +30 %
       // ------------------
 
       // Mindesthelligkeit erzwingen (nur wenn RGB an ist)
