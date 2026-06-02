@@ -231,7 +231,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   const uint8_t STEUERUNG [] = {28,32,33,34,35,36};
   const uint8_t MAUSSTEUERUNG [] = {28,32,34,36};
   const uint8_t MAUSBUTTONS [] = {5,10,13,33};
-  
+
 
   void set_layer_leds(
       const uint8_t *led_array,
@@ -243,8 +243,8 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       uint8_t v = rgb_matrix_config.hsv.v; //Helligkeit lesen um sie nachher zur Multiplikation zu verwenden
 
       // --- Feintuning ---
-      const uint8_t MIN_LAYER_BRIGHTNESS = 20;   // Grundhelligkeit
-      const uint8_t LAYER_BOOST_PERCENT = 120;   // +30 %
+      const uint8_t MIN_LAYER_BRIGHTNESS = 10;   // Grundhelligkeit
+      const uint8_t LAYER_BOOST_PERCENT = 110;   // +30 %
       // ------------------
 
       // Mindesthelligkeit erzwingen (nur wenn RGB an ist)
@@ -371,7 +371,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_SLASH:
             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
             return true;
-        
+
         // Vial-spezifische Tap Dances zulassen
         // QK_TAP_DANCE ist das Start-Offset für alle Tap Dances in modernen QMK/Vial Versionen
         case QK_TAP_DANCE ... QK_TAP_DANCE_MAX:
